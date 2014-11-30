@@ -763,5 +763,5 @@ app = webapp2.WSGIApplication([
     ('/login', Login),
     ('/logout', Logout),
     ('/test', Test),
-], debug=True)
+], debug=False)
 
