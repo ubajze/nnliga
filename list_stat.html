@@ -1,0 +1,88 @@
+{% extends "framework.html" %}
+{% block list_stat %}
+
+<style type="text/css">
+   .hidden {
+        display: none;
+   {
+   .visible {
+        display: block;
+   }
+</style>
+
+<div id="content">
+
+	<div>
+	<h2>Seznam sezon:</h2>
+	<ul>
+	{% for season in season_list %}
+	<li><a href="/list_stat?season={{ season }}">Sezona {{ season }}</a></li>
+	{% endfor %}
+	</ul>
+	<br><br>
+	</div>
+
+{% for stat in stat_list[0:1] %}
+<div id="div_season_{{ stat.season }}" onclick="toggle_visibility('season_{{ stat.season }}');"><h2>Statistika za sezono {{ stat.season }}</h2></div>
+<div id="season_{{ stat.season }}" style="display:block;">
+<hr><h3>Lestvica</h3><br>
+<table border="1" style="width:100%">
+<tr>
+<td align="center"><b>Pozicija</b></td>
+<td align="center"><b>Igralec</b></td>
+<td align="center"><b>Zmage/Število tekem</b></td>
+<td align="center"><b>Zmage procenti</b></td>
+<td align="center"><b>Dani goli</b></td>
+<td align="center"><b>Prejeti goli</b></td>
+<td align="center"><b>Razlika dani/prejeti</b></td>
+<td align="center"><b>Udeležba</b></td>
+</tr>
+{% for player in stat.player_stat %}
+{% if player.player_ontable %}
+<tr>
+<td align="center">{{ player.player_position }}.</td>
+<td align="center">{{ player.player_lastname }} {{ player.player_firstname }}</td>
+<td align="center">{{ player.player_wins }}/{{ player.player_number_of_games_played }}</td>
+<td align="center">{{ player.player_wins_percentage }}%</td>
+<td align="center">{{ player.player_goals_for }}</td>
+<td align="center">{{ player.player_goals_against }}</td>
+<td align="center">{{ player.player_goals_diff }}</td>
+<td align="center">{{ player.player_participation }}</td>
+</tr>
+{% endif %}
+{% endfor %}
+
+</table><br><br>
+
+<h3>Neuvrščeni:</h3>
+<table border="1" style="width:100%">
+<tr>
+<td align="center"><b>Igralec</b></td>
+<td align="center"><b>Zmage/Število tekem</b></td>
+<td align="center"><b>Zmage procenti</b></td>
+<td align="center"><b>Dani goli</b></td>
+<td align="center"><b>Prejeti goli</b></td>
+<td align="center"><b>Razlika dani/prejeti</b></td>
+<td align="center"><b>Udeležba</b></td>
+</tr>
+{% for player in stat.player_stat %}
+{% if not player.player_ontable %}
+<tr>
+<td align="center">{{ player.player_lastname }} {{ player.player_firstname }}</td>
+<td align="center">{{ player.player_wins }}/{{ player.player_number_of_games_played }}</td>
+<td align="center">{{ player.player_wins_percentage }}%</td>
+<td align="center">{{ player.player_goals_for }}</td>
+<td align="center">{{ player.player_goals_against }}</td>
+<td align="center">{{ player.player_goals_diff }}</td>
+<td align="center">{{ player.player_participation }}</td>
+</tr>
+{% endif %}
+{% endfor %}
+
+</table><br><br><hr>
+</div>
+{% endfor %}
+
+
+</div>
+{% endblock %}

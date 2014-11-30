@@ -1,0 +1,37 @@
+application: nnliga1
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+#- url: /authorization
+#  script: main.app
+#  login: admin
+  
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /style\.css
+  static_files: style.css
+  upload: style\.css
+
+- url: /navi\.css
+  static_files: navi.css
+  upload: navi\.css
+
+- url: /images
+  static_dir: images
+
+- url: /media
+  static_dir: media
+  
+- url: .*
+  script: main.app
+  
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: jinja2
+  version: latest

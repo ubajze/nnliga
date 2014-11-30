@@ -1,0 +1,94 @@
+{% extends "framework.html" %}
+{% block add_payment %}
+<div id="content">
+
+{% if error_msg_login %}
+Prijavi se z Google računom.
+{% elif error_msg_add_payment %}
+Nisi avtoriziran za dodajanje plačila.
+{% else %}
+
+<script language="Javascript" type="text/javascript">
+
+var counter = 2;
+var div_id = "player_options_1";
+var append_location = "payment_input";
+
+
+function add_input(){
+	var new_id = "player_options_" + counter;
+	var newdiv = document.createElement('div');
+	var input_html = document.getElementById(div_id).innerHTML;
+	var old_string_1 = "player_1";
+	var old_string_2 = "payment_1";
+	var old_string_3 = "debt_1";
+	var new_string_1 = "player_" + counter;
+	var new_string_2 = "payment_" + counter;
+	var new_string_3 = "debt_" + counter;
+	input_html = input_html.replace(old_string_1,new_string_1);
+	input_html = input_html.replace(old_string_2,new_string_2);
+	input_html = input_html.replace(old_string_3,new_string_3);
+	newdiv.setAttribute('id',new_id);
+	newdiv.innerHTML = input_html;
+	document.getElementById(append_location).appendChild(newdiv);
+	counter++;
+}
+
+function delete_input(){
+	var deleted_div_name = "player_options_" + (counter - 1)
+	var deleted_div = document.getElementById(deleted_div_name);
+	if (counter > 2) {
+		deleted_div.parentNode.removeChild(deleted_div);
+		counter = counter - 1
+	}
+}
+ 
+
+</script>
+
+{% if add_payment_block %}
+
+<h2>Dodaj plačilo</h2>
+
+
+
+
+<h3>Sezona: {{ season }}</h3>
+<div id="{{ season }}">
+<form method="post">
+	<input type="hidden" name="season" value="{{ season }}">
+	Datum: <input type="date" name="match_date"><br><br>
+	<b>Igralec&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plačilo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dolg</b>
+	<div id="payment_input">
+	<div id="player_options_1"><select name="player_1">
+	<option value=""></option>
+	{% for player in player_list %}
+	<option value="{{ player.player_id }}">{{ player.player_firstname }} {{ player.player_lastname}}</option>
+	{% endfor %}
+	</select>
+	<input type="text" name="payment_1" size="4">
+	<input type="text" name="debt_1" size="4">
+	</div></div>
+	
+	<input type="button" value="Dodaj igralce" onClick="add_input();">
+	<input type="button" value="Zbriši igralce" onClick="delete_input();"><br>
+	<input type="submit" value="Potrdi plačila">
+	<br>
+	
+</form><br><br>
+</div>
+
+
+{% else %}
+<h2>Seznam sezon</h2>
+<ul>
+{% for season in seasons %}
+<li><a href="/add_payment?season={{ season }}">Sezona {{ season }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+
+{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "framework.html" %}
+{% block add_season %}
+<div id="content">
+
+{% if error_msg_login %}
+Prijavi se z Google računom.
+{% elif error_msg_authorization %}
+Nisi avtoriziran za dodajanje igralcev.
+{% else %}
+
+
+<h2>Dodaj igralca:</h2>
+<form name="input" method="post">
+<select name="season">
+{% for player_list in players %}
+<option value="{{ player_list.season }}">{{ player_list.season }}</option>
+{% endfor %}
+</select><br>
+Ime: <input type="text" name="firstname"><br>
+Priimek: <input type="text" name="lastname"><br>
+<input type="submit" value="Dodaj">
+</form>
+
+<h2>Trenutno kreirani igralci:</h2>
+
+{% for player_list in players[0:1] %}
+<div onclick="toggle_visibility('div_{{ player_list.season }}');"><h3>Sezona: {{ player_list.season }}</h3></div>
+<div id="div_{{ player_list.season }}" style="display:block;"><ul>
+{% for player in player_list.player_list %}
+
+<li>ID: {{ player.player_id }}<br>
+Ime: {{ player.player_firstname }}<br>
+Priimek: {{ player.player_lastname }}<br>
+</li><br>
+{% endfor %}
+</ul></div>
+{% endfor %}
+
+
+{% for player_list in players[1:] %}
+<div onclick="toggle_visibility('div_{{ player_list.season }}');"><h3>Sezona: {{ player_list.season }}</h3></div>
+<div id="div_{{ player_list.season }}" style="display:none;"><ul>
+{% for player in player_list.player_list %}
+
+<li>ID: {{ player.player_id }}<br>
+Ime: {{ player.player_firstname }}<br>
+Priimek: {{ player.player_lastname }}<br>
+</li><br>
+{% endfor %}
+</ul></div>
+{% endfor %}
+
+
+{% endif %}
+
+</div>
+{% endblock %}

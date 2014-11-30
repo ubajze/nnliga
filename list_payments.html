@@ -1,0 +1,104 @@
+{% extends "framework.html" %}
+{% block list_payments %}
+
+
+<style type="text/css">
+   .hidden {
+        display: none;
+   {
+   .visible {
+        display: block;
+   }
+</style>
+
+<div id="content">
+{% if error_msg_login %}
+Prijavi se z Google računom.
+{% elif error_msg_list_payments %}
+Nisi avtoriziran za pregled plačil.
+{% else %}
+
+
+{% if payments_list_block %}
+{% for payment_data in payments[0:1] %}
+<div id="div_season_{{ payment_data.season }}" onclick="toggle_visibility('season_{{ payment_data.season }}');"><h2>Sezona: {{ payment_data.season }}</h2></div>
+<div id="season_{{ payment_data.season }}" style="display:block;">
+<table border="1" width="80%">
+<tr>
+<td align="center"><b>Igralec</b></td>
+<td align="center"><b>Plačal</b></td>
+<td align="center"><b>Obveznosti</b></td>
+<td align="center"><b>Dolžan</b></td>
+
+
+</tr>
+{% for player in payment_data.player_payment_data %}
+
+<tr>
+<td align="center"><a href="?id={{ player.player_id }}">{{ player.player_lastname }} {{ player.player_firstname }}</a></td>
+<td align="center">{{ player.player_payments }}€</td>
+<td align="center">{{ player.player_debt }}€</td>
+<td align="center">{{ player.player_owe }}€</td>
+
+</tr>
+
+{% endfor %}
+</table></div>
+
+{% endfor %}
+
+
+{% for payment_data in payments[1:] %}
+<div id="div_season_{{ payment_data.season }}" onclick="toggle_visibility('season_{{ payment_data.season }}');"><h2>Sezona: {{ payment_data.season }}</h2></div>
+<div id="season_{{ payment_data.season }}" style="display:none;">
+<table border="1" width="80%">
+<tr>
+<td align="center"><b>Igralec</b></td>
+<td align="center"><b>Plačal</b></td>
+<td align="center"><b>Obveznosti</b></td>
+<td align="center"><b>Dolžan</b></td>
+
+
+</tr>
+{% for player in payment_data.player_payment_data %}
+
+<tr>
+<td align="center"><a href="?id={{ player.player_id }}">{{ player.player_lastname }} {{ player.player_firstname }}</a></td>
+<td align="center">{{ player.player_payments }}€</td>
+<td align="center">{{ player.player_debt }}€</td>
+<td align="center">{{ player.player_owe }}€</td>
+
+</tr>
+
+{% endfor %}
+</table></div>
+
+{% endfor %}
+
+
+
+{% else %}
+
+<h2>Plačila za igralca: {{ player_lastname }} {{ player_firstname }}</h2><br>
+<table border="1" width="50%">
+<tr>
+<td align="center"><b>Datum plačila</b></td>
+<td align="center"><b>Plačilo</b></td>
+</tr>
+{% for payment in payments %}
+<tr>
+<td align="center">{{ payment.payment_date }}</td>
+<td align="center">{{ payment.payment_payment }}€</td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endif %}
+{% endif %}
+</div>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<script type="text/javascript">
+    function calcSize(frame_id)
+    {
+
+    //find the height of the internal page
+    var the_height = document.getElementById(frame_id).contentWindow.document.body.scrollHeight;
+    var the_width = document.getElementById(frame_id).contentWindow.document.body.scrollWidth;
+
+    //change the height of the iframe
+    document.getElementById(frame_id).height = the_height;
+    document.getElementById(frame_id).width = the_width;
+    }
+
+
+    function toggle_visibility(id) 
+    {
+        var e = document.getElementById(id);
+        if ( e.style.display == 'block' )
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+
+function httpGet(url_request){
+var req = new XMLHttpRequest();
+req.open('GET', url_request, false);
+req.send(null);
+var headers = req.getAllResponseHeaders().toLowerCase();
+alert(headers);
+}
+</script>
+<head>
+<title>NNliga</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="navi.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="container">
+	<div id="top">
+		{% if authenticated %}
+		<div align="right"><a href="/logout">Odjava</a></div>
+		{% else %}
+		<div align="right"><a href="/login">Prijava</a></div>
+		{% endif %}
+	</div>
+<div id="header">
+	<h1 class="header2">NNliga</h1>
+</div>
+<div id="navigation">
+	<div id="invertedtabsline">&nbsp;</div>
+	<div id="invertedtabs">
+		<ul>
+			<li style="margin-left: 1px"><a href="/"><span>Tekme</span></a></li>
+			<li><a href="/list_stat"><span>Statistika</span></a></li>
+			{% if authorization_payment_view %}
+			<li><a href="/list_payments"><span>Plačila</span></a></li>
+			{% endif %}
+			{% if authorization_season_add %}
+			<li><a href="/add_season"><span>Dodaj sezono</span></a></li>
+			{% endif %}
+			{% if authorization_player_add %}
+			<li><a href="/add_player"><span>Dodaj igralca</span></a></li>
+			{% endif %}
+			{% if authorization_match_add %}
+			<li><a href="/add_match"><span>Dodaj tekmo</span></a></li>
+			{% endif %}
+			{% if authorization_payment_add %}
+			<li><a href="/add_payment"><span>Dodaj plačilo</span></a></li>
+			{% endif %}
+			{% if authorization_admin %}
+			<li><a href="/authorization"><span>Avtorizacija</span></a></li>
+			{% endif %}
+		</ul>
+	</div>
+	<br style="clear: left" />
+</div>
+
+{% block match_list %}
+{% endblock %}
+{% block list_payments %}
+{% endblock %}
+{% block list_stat %}
+{% endblock %}
+{% block add_season %}
+{% endblock %}
+{% block add_player %}
+{% endblock %}
+{% block add_payment %}
+{% endblock %}
+
+<div class="clear" id="footer"></div>
+</div>
+
+  
+
+</body>
+</html>

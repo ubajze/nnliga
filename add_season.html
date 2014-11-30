@@ -1,0 +1,30 @@
+{% extends "framework.html" %}
+{% block add_season %}
+<div id="content">
+{% if error_msg_login %}
+Prijavi se z Google računom.
+{% elif error_msg_authorization %}
+Nisi avtoriziran za dodajanje sezone.
+{% else %}
+
+
+<h2>Dodaj sezono:</h2>
+<form method="post">
+(oblika xxxx-xxxx)<br>
+	<input type="text" name="season">
+	<input type="submit" value="add">
+</form>
+<br><br>
+
+<h2>Trenutno kreirane sezone:</h2>
+<ul>
+{% for season in seasons %}
+<li>{{ season }}</li>
+{% endfor %}
+</ul>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "framework.html" %}
+{% block add_season %}
+<div id="content">
+
+{% if error_msg_login %}
+Prijavi se z Google računom.
+{% elif error_msg_authorization %}
+Nisi avtoriziran za dodajanje tekme.
+{% else %}
+
+<script language="Javascript" type="text/javascript">
+
+var counter = 2;
+var div_id = "player_options_1";
+var append_location = "match_input";
+
+
+function add_input(){
+	var new_id = "player_options_" + counter;
+	var newdiv = document.createElement('div');
+	var input_html = document.getElementById(div_id).innerHTML;
+	var old_string_A = "teamA_1";
+	var old_string_B = "teamB_1";
+	var new_string_A = "teamA_" + counter;
+	var new_string_B = "teamB_" + counter;
+	input_html = input_html.replace(old_string_A,new_string_A);
+	input_html = input_html.replace(old_string_B,new_string_B);
+	newdiv.setAttribute('id',new_id);
+	newdiv.innerHTML = input_html;
+	document.getElementById(append_location).appendChild(newdiv);
+	counter++;
+}
+
+function delete_input(){
+	var deleted_div_name = "player_options_" + (counter - 1)
+	var deleted_div = document.getElementById(deleted_div_name);
+	if (counter > 2) {
+		deleted_div.parentNode.removeChild(deleted_div);
+		counter = counter - 1
+	}
+}
+ 
+
+</script>
+
+{% if add_match_block %}
+
+<h2>Dodaj tekmo</h2>
+
+
+
+
+<h3>Sezona: {{ season }}</h3>
+<div id="{{ season }}">
+<form method="post">
+	<input type="hidden" name="season" value="{{ season }}">
+	Datum: <input type="date" name="match_date"><br>
+	Rezultat ekipe A<input type="text" name="teamA_score"><br>
+	Rezultat ekipe B<input type="text" name="teamB_score"><br><br>
+	Ekipa A in B<br><br>
+	<div id="match_input">
+	<div id="player_options_1">
+		<select name="teamA_1">
+			<option value=""></option>
+			{% for player in player_list %}
+			<option value="{{ player.player_id }}">{{ player.player_firstname }} {{ player.player_lastname}}</option>
+			{% endfor %}
+		</select>
+		<select name="teamB_1">
+			<option value=""></option>
+			{% for player in player_list %}
+			<option value="{{ player.player_id }}">{{ player.player_firstname }} {{ player.player_lastname}}</option>
+			{% endfor %}
+		</select>
+	</div>
+	</div>
+	<br>
+	<input type="button" value="Dodaj igralce" onClick="add_input();">
+	<input type="button" value="Zbriši igralce" onClick="delete_input();"><br>
+	<input type="submit" value="Potrdi tekmo">
+	<br>
+	
+</form><br><br>
+</div>
+
+
+{% else %}
+<h2>Seznam sezon</h2>
+<ul>
+{% for season in seasons %}
+<li><a href="/add_match?season={{ season }}">Sezona {{ season }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+
+{% endif %}
+</div>
+{% endblock %}
