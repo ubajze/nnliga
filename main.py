@@ -416,6 +416,112 @@ class ListStat(TemplateRender):
         season_list = Season.get_season_list()
         template_values['season_list'] = season_list
 
+        ## Za per player statistiko
+
+        all_seasons = Season.get_season_list()
+        season_key = Season.get_season_key(all_seasons[0])
+        all_players = Player.get_all_players_from_season(season_key)
+        all_matches = Match.get_all_matches(season_key)
+        player_position_in_matrix = {}
+        matrix_data = {
+            'wins': 0,
+            'matches': 0,
+            'percentage': 0.0,
+            'goals_for': 0,
+            'goals_against': 0,
+            'goals_diff': 0,
+        }
+        matrix = [[matrix_data for x in range(len(all_players))] for x in range(len(all_players))]
+        counter = 0
+        for player in all_players:
+            player_position_in_matrix[player.player_id] = counter
+            counter = counter + 1
+
+        for match in all_matches:
+            teamA = match.teamA
+            teamB = match.teamB
+            teamA_score = match.teamA_score
+            teamB_score = match.teamB_score
+
+            for player in teamA:
+                #self.response.write(player)
+                if teamA_score > teamB_score:
+                    wins = 1
+                elif teamA_score == teamB_score:
+                    wins = 0.5
+                else:
+                    wins = 0
+
+                self.response.write(player)
+                for player2 in teamA:
+                    
+                    self.response.write(player2)
+                    if player != player2:
+                        current_data = matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]].copy()
+                        #self.response.write(current_data)
+                        
+                        current_data['wins'] = current_data['wins'] + wins
+                        #self.response.write(current_data)
+                        #self.response.write(matrix)
+                        self.response.write('<br>')
+                        current_data['matches'] = current_data['matches'] + 1
+                        current_data['percentage'] = format(current_data['wins']/float(current_data['matches']),'.2f')
+                        current_data['goals_for'] = current_data['goals_for'] + teamA_score
+                        current_data['goals_against'] = current_data['goals_against'] + teamB_score
+                        current_data['goals_diff'] = current_data['goals_for'] - current_data['goals_against']
+                        matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]] = current_data
+                    else:
+                        matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]] = None
+
+            for player in teamB:
+                #self.response.write(player)
+                if teamA_score > teamB_score:
+                    wins = 0
+                elif teamA_score == teamB_score:
+                    wins = 0.5
+                else:
+                    wins = 1
+
+                self.response.write(player)
+                for player2 in teamB:
+                    
+                    self.response.write(player2)
+                    if player != player2:
+                        current_data = matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]].copy()
+                        #self.response.write(current_data)
+                        
+                        current_data['wins'] = current_data['wins'] + wins
+                        #self.response.write(current_data)
+                        #self.response.write(matrix)
+                        self.response.write('<br>')
+                        current_data['matches'] = current_data['matches'] + 1
+                        current_data['percentage'] = format(current_data['wins']/float(current_data['matches']),'.2f')
+                        current_data['goals_for'] = current_data['goals_for'] + teamB_score
+                        current_data['goals_against'] = current_data['goals_against'] + teamA_score
+                        current_data['goals_diff'] = current_data['goals_for'] - current_data['goals_against']
+                        matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]] = current_data
+                    else:
+                        matrix[player_position_in_matrix[player]][player_position_in_matrix[player2]] = None
+ 
+        self.response.write('<br>')
+        self.response.write('<br>')
+        self.response.write(player_position_in_matrix)   
+        self.response.write('<br>')
+        self.response.write('<br>')
+        self.response.write('<table border="1" style="width:100%"><tr><td>')
+        for i in matrix:
+            for j in i:
+                self.response.write(j)
+                self.response.write('<br>')
+            self.response.write('<br>')
+        self.response.write('</td></tr></table>')       
+        # self.response.write(matrix)
+        #self.response.write(all_players)
+        #self.response.write(all_matches)
+        #self.response.write(player_position_in_matrix)
+        #self.response.write(len(all_players))
+
+
         self.render_webpage(template_values,self.get_template('list_stat.html'))
 
 
