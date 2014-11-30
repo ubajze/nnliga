@@ -79,10 +79,35 @@
 {% endif %}
 {% endfor %}
 
-</table><br><br><hr>
-</div>
+</table><br><br>
+
 {% endfor %}
 
+<h3>Statistika igranja v isti ekipi</h3>
+<table border="1" style="width:100%">
+<tr>
+<td></td>
+{% for player in player_index_list %}
+<td align="center"><b>{{ player }}</b></td>
+{% endfor %}
+</tr>
+<tr>
+</tr>
+{% for i in range(player_index_list|count) %}
+<tr>
+<td align="center"><b>{{ player_index_list[i] }}</b></td>
+{% for stat in per_player_stat[i] %}
+{% if stat %}
+<td align="center">{{ stat.wins }}/{{ stat.matches }}<br>{{ stat.percentage }}%<br>{{ stat.goals_for }}/{{ stat.goals_against }}/{{ stat.goals_diff }}</td>
+{% else %}
+<td></td>
+{% endif %}
+{% endfor %}
+</tr>
+{% endfor %}
 
+</table>
+</div>
+<br><br><hr>
 </div>
 {% endblock %}
