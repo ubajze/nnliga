@@ -1,5 +1,6 @@
 cron:
 - description: Weekly Backup
-  url: /_ah/datastore_admin/backup.create?name=Backup&kind=Match&kind=Player&kind=PlayerStat&kind=Season&kind=UserAuthorization
+  url: /_ah/datastore_admin/backup.create?name=BackupToCloud&kind=Match&kind=Player&kind=PlayerStat&kind=Season&kind=UserAuthorization&filesystem=gs&gs_bucket_name=nnliga1.appspot.com
   schedule: every saturday 09:00
   target: ah-builtin-python-bundle
+
