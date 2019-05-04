@@ -750,18 +750,27 @@ class Test(TemplateRender):
 
         #self.render_webpage(template_values,self.get_template('list_stat.html'))
 
+class Redirect(webapp2.RequestHandler):
+
+    def get(self):
+        self.redirect('http://nnliga2.appspot.com')
+
+
+# app = webapp2.WSGIApplication([
+#     ('/', Index),
+#     ('/add_season', AddSeason),
+#     ('/add_player', AddPlayer),
+#     ('/add_match', AddMatch),
+#     ('/list_stat', ListStat),
+#     ('/add_payment', AddPayment),
+#     ('/list_payments', ListPayments),
+#     ('/authorization', Authorization),
+#     ('/login', Login),
+#     ('/logout', Logout),
+#     ('/test', Test),
+# ], debug=False)
 
 app = webapp2.WSGIApplication([
-    ('/', Index),
-    ('/add_season', AddSeason),
-    ('/add_player', AddPlayer),
-    ('/add_match', AddMatch),
-    ('/list_stat', ListStat),
-    ('/add_payment', AddPayment),
-    ('/list_payments', ListPayments),
-    ('/authorization', Authorization),
-    ('/login', Login),
-    ('/logout', Logout),
-    ('/test', Test),
+    (r'/.*', Redirect),
 ], debug=False)
 
