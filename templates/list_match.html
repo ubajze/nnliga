@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<script type="text/javascript">
+    function calcSize(frame_id)
+    {
+
+    //find the height of the internal page
+    var the_height = document.getElementById(frame_id).contentWindow.document.body.scrollHeight;
+    var the_width = document.getElementById(frame_id).contentWindow.document.body.scrollWidth;
+
+    //change the height of the iframe
+    document.getElementById(frame_id).height = the_height;
+    document.getElementById(frame_id).width = the_width;
+    }
+
+
+    function toggle_visibility(id) 
+    {
+        var e = document.getElementById(id);
+        if ( e.style.display == 'block' )
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+
+    function httpGet(url_request)
+    {
+        var req = new XMLHttpRequest();
+        req.open('GET', url_request, false);
+        req.send(null);
+        var headers = req.getAllResponseHeaders().toLowerCase();
+        alert(headers);
+    }
+</script>
+
+<style type="text/css">
+   .hidden {
+        display: none;
+   {
+   .visible {
+        display: block;
+   }
+</style>
+
+<head>
+  <title>NNLiga</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+</head>
+
+<body>
+
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="list_match.html">NNliga</a></h1>
+          <h2>Naklanska nogometna liga</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li class="selected"><a href="/">Tekme</a></li>
+          <li><a href="/list_stat">Statistika</a></li>
+          <li>{% if authorization_season_add %}<a href="/add_season">Dodaj sezono</a>{% endif %}</li>
+          <li>{% if authorization_player_add %}<a href="/add_player">Dodaj Igralca</a>{% endif %}</li>
+          <li>{% if authorization_match_add %}<a href="/add_match">Dodaj tekmo</a>{% endif %}</li>
+          <li>{% if not authenticated %}<a href="/login">Prijava</a>{% else %}<a href="/logout">Odjava</a>{% endif %}</li>
+        </ul>
+      </div>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+      <!-- <div id="banner"></div> -->
+      <div id="content">
+
+
+        <div>
+          <h2>Seznam sezon:</h2>
+          <ul>
+          {% for season in season_list %}
+          <li><a href="/?season={{ season }}">Sezona {{ season }}</a></li>
+          {% endfor %}
+          </ul>
+          <br><br>
+        </div>
+
+
+        {% for season in matches[0:1] %}
+        <div id="div_season_{{ season.season }}" onclick="toggle_visibility('season_{{ season.season }}');"><h2>Sezona: {{ season.season }}</h2></div>
+        <div id="season_{{ season.season }}" style="display:block;">
+
+          {% for match in season.list_matches[0:1] %}
+          <div id="div_match_{{ season.season }}_{{ match.match_round }}" onclick="toggle_visibility('table_{{ season.season }}_{{ match.match_round }}');"><h3>Tekma {{ match.match_round }} sezone {{ season.season }} - {{ match.match_date }}</h3>
+          </div><br>
+          <div id="table_{{ season.season }}_{{ match.match_round }}" style="display:block;">
+            <table border="1" width="80%">
+            <tr>
+            <td align="center"><b><font size="3">Ekipa A</font></b></td>
+            <td align="center"><b><font size="3">Ekipa B</font></b></td>
+            </tr>
+            <tr>
+            <td align="center"><font size="3"><i>{{ match.teamA_score }}</i></font></td>
+            <td align="center"><font size="3"><i>{{ match.teamB_score }}</i></font></td>
+            </tr>
+            {% for player_pair in match.players %}
+            <tr>
+            <td align="center">{{ player_pair[0] if player_pair[0] != None }}</td>
+            <td align="center">{{ player_pair[1] if player_pair[1] != None }}</td>
+            </tr>
+            {% endfor %}
+            </table> <br><hr><br>
+          </div>
+          {% endfor %}
+      
+          {% for match in season.list_matches[1:] %}
+          <div id="div_match_{{ season.season }}_{{ match.match_round }}" onclick="toggle_visibility('table_{{ season.season }}_{{ match.match_round }}');"><h3>Tekma {{ match.match_round }} sezone {{ season.season }} - {{ match.match_date }}</h3>
+          </div><br>
+          <div id="table_{{ season.season }}_{{ match.match_round }}" style="display:none;">
+            <table border="1" width="80%">
+            <tr>
+            <td align="center"><b><font size="3">Ekipa A</font></b></td>
+            <td align="center"><b><font size="3">Ekipa B</font></b></td>
+            </tr>
+            <tr>
+            <td align="center"><font size="3">{{ match.teamA_score }}</font></td>
+            <td align="center"><font size="3">{{ match.teamB_score }}</font></td>
+            </tr>
+            {% for player_pair in match.players %}
+            <tr>
+            <td align="center">{{ player_pair[0] if player_pair[0] != None }}</td>
+            <td align="center">{{ player_pair[1] if player_pair[1] != None }}</td>
+            </tr>
+            {% endfor %}
+            </table> <br><hr><br>
+          </div>
+          {% endfor %}
+        </div>
+  
+        {% endfor %}
+
+
+      </div>
+    </div>
+    <div id="content_footer"></div>
+    <div id="footer"></div>
+  </div>
+</body>
+</html>

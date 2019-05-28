@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<script type="text/javascript">
+    function calcSize(frame_id)
+    {
+
+    //find the height of the internal page
+    var the_height = document.getElementById(frame_id).contentWindow.document.body.scrollHeight;
+    var the_width = document.getElementById(frame_id).contentWindow.document.body.scrollWidth;
+
+    //change the height of the iframe
+    document.getElementById(frame_id).height = the_height;
+    document.getElementById(frame_id).width = the_width;
+    }
+
+
+    function toggle_visibility(id) 
+    {
+        var e = document.getElementById(id);
+        if ( e.style.display == 'block' )
+            e.style.display = 'none';
+        else
+            e.style.display = 'block';
+    }
+
+    function httpGet(url_request)
+    {
+        var req = new XMLHttpRequest();
+        req.open('GET', url_request, false);
+        req.send(null);
+        var headers = req.getAllResponseHeaders().toLowerCase();
+        alert(headers);
+    }
+</script>
+
+<style type="text/css">
+   .hidden {
+        display: none;
+   {
+   .visible {
+        display: block;
+   }
+</style>
+
+<head>
+  <title>NNLiga</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+</head>
+
+<body>
+
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="list_match.html">NNliga</a></h1>
+          <h2>Naklanska nogometna liga</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="/">Tekme</a></li>
+          <li class="selected"><a href="/list_stat">Statistika</a></li>
+          <li>{% if authorization_season_add %}<a href="/add_season">Dodaj sezono</a>{% endif %}</li>
+          <li>{% if authorization_player_add %}<a href="/add_player">Dodaj Igralca</a>{% endif %}</li>
+          <li>{% if authorization_match_add %}<a href="/add_match">Dodaj tekmo</a>{% endif %}</li>
+          <li>{% if not authenticated %}<a href="/login">Prijava</a>{% else %}<a href="/logout">Odjava</a>{% endif %}</li>
+        </ul>
+      </div>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+      <!-- <div id="banner"></div> -->
+      <div id="content">
+
+        <div>
+          <h2>Statistika za igralca: {{ player }}</h2>
+        <br><br>
+        </div>
+
+        <hr><h3>Statistika po sezonah</h3><br>
+        <table border="1" style="width:100%">
+        <tr>
+        <td align="center"><b>Sezona</b></td>
+        <td align="center"><b>Pozicija</b></td>
+        <td align="center"><b>Zmage/Število tekem</b></td>
+        <td align="center"><b>Zmage procenti</b></td>
+        <td align="center"><b>Dani goli</b></td>
+        <td align="center"><b>Prejeti goli</b></td>
+        <td align="center"><b>Razlika dani/prejeti</b></td>
+        <td align="center"><b>Udeležba</b></td>
+        </tr>
+        {% for stat in stats %}
+        <tr>
+        <td align="center"><a href="/list_stat?season={{ stat.season }}">{{ stat.season }}</td>
+        <td align="center">{{ stat.position }}</td>
+        <td align="center">{{ stat.won }}/{{ stat.played }}</td>
+        <td align="center">{{ stat.percentage }}%</td>
+        <td align="center">{{ stat.goals_for }}</td>
+        <td align="center">{{ stat.goals_against }}</td>
+        <td align="center">{{ stat.goals_diff }}</td>
+        <td align="center">{{ stat.participation }}%</td>
+        </tr>
+        {% endfor %}
+        <tr>
+        <td align="center">Skupaj</td>
+        <td align="center">/</td>
+        <td align="center">{{ all.won }}/{{ all.played }}</td>
+        <td align="center">{{ all.percentage }}%</td>
+        <td align="center">{{ all.goals_for }}</td>
+        <td align="center">{{ all.goals_against }}</td>
+        <td align="center">{{ all.goals_diff }}</td>
+        <td align="center">/</td>
+        </tr>
+
+        </table><br><br>
+
+
+        <div>
+          <h3>Statistika igranja v isti ekipi</h3>
+        <br><br>
+        </div>
+
+
+        <table border="1" style="width:100%">
+          <tr>
+          <td align="center"><b>Igralec</b></td>
+          {% for season in seasons %}
+          <td align="center"><b>{{ season }}</b></td>
+          {% endfor %}
+          <td align="center"><b>Skupaj</b></td>
+          </tr>
+
+          {% for player in players %}
+          <tr>
+            <td align="center">{{ player }}</td>
+            {% for season in seasons %}
+            {% if player in headup and season in headup[player] %}
+            <td align="center">{{ headup[player][season].won }}/{{ headup[player][season].played }}<br>{{ headup[player][season].percentage }}%<br>{{ headup[player][season].goals_for }}/{{ headup[player][season].goals_against }}/{{ headup[player][season].goals_diff }}</td>
+            {% else %}
+            <td align="center">0/0<br>0.0%<br>0/0/0</td>
+            {% endif %}
+            {% endfor %}
+            {% if player in headup_all %}
+            <td align="center">{{ headup_all[player].won }}/{{ headup_all[player].played }}<br>{{ headup_all[player].percentage }}%<br>{{ headup_all[player].goals_for }}/{{ headup_all[player].goals_against }}/{{ headup_all[player].goals_diff }}</td>
+            {% else %}
+            <td align="center">0/0<br>0.0%<br>0/0/0</td>
+            {% endif %}
+
+          </tr>
+          {% endfor %}
+
+          </table><br><br>
+
+      </div>
+    </div>
+    <div id="content_footer"></div>
+    <div id="footer"></div>
+  </div>
+</body>
+</html>
